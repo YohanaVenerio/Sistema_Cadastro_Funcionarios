@@ -305,7 +305,7 @@ void cadastro_inicio(TipoLista *L)
 }
 
 // Função Cadastrar em uma posição X
-int cadastro_posicao(TipoLista *L)
+void cadastro_posicao(TipoLista *L)
 {
     reg_funcionario reg_funci;
     TipoApontador p;
@@ -498,6 +498,7 @@ void exclusao_final(TipoLista *L)
 {
     TipoApontador t;
     TipoApontador r;
+    TipoApontador s;
     int opc;
     do
     {
@@ -512,8 +513,8 @@ void exclusao_final(TipoLista *L)
         t = r->proximo;
         while (t->proximo != NULL)
         {
+            r = t;
             t = t->proximo;
-            r = r->proximo;
         }
         tela();
         gotoxy(35, 6);
@@ -543,16 +544,145 @@ void exclusao_final(TipoLista *L)
         {
             if (L->primeiro->proximo == NULL)
             {
-                free(L->primeiro);
+                s = L->primeiro; 
+                free(s);
                 L->primeiro = NULL;
                 L->ultimo = NULL;
             }
             else
             {
+                r->proximo = NULL;
                 L->ultimo = r;
                 free(t);
-                
             }
+        }
+        gotoxy(7, 25);
+        printf("                                                         ");
+        gotoxy(30, 23);
+        printf("CADASTRO EXCLUIDO");
+        getch();
+        return;
+    } while (opc == 1);
+}
+
+//Função Excluir em uma posição X
+void excluir_posicao(TipoLista*L)
+{
+    TipoApontador t;
+    TipoApontador r;
+    int opc;
+    int cntg;
+    int posi;
+    int cont = 1;
+    cntg = contagem(L);
+    do
+    {
+        if (L->primeiro == NULL) 
+        {
+            gotoxy(7,25);
+            printf("LISTA VAZIA, NADA A EXCLUIR.");
+            getch();
+            return;
+        }
+        do
+        {
+            gotoxy(7, 25);
+            printf("                       ");
+            gotoxy(7, 25);
+            printf("DIGITE A POSICAO : ");
+            scanf("%d", &posi);
+            if (posi < 1 || posi > cntg)
+            {
+                gotoxy(7, 25);
+                printf("                         ");
+                gotoxy(7, 25);
+                printf("POSICAO INVALIDA ");
+                getch();
+            }
+
+        } while (posi < 1 || posi > cntg);
+        if (posi == 1)
+        {
+            t = L->primeiro;
+            L->primeiro = t->proximo;
+            if (L->primeiro == NULL)
+            {
+                L->ultimo = NULL;
+            }
+            tela();
+            gotoxy(35, 6);
+            printf("EXCLUSAO CADASTRO NA PRIMEIRA POSICAO");
+            gotoxy(15, 8);
+            printf("CODIGO........: %d", t->conteudo.codigo);
+            gotoxy(15, 10);
+            printf("NOME..........: %s", t->conteudo.nome);
+            gotoxy(15, 12);
+            printf("ENDERECO......: %s", t->conteudo.endereco);
+            gotoxy(15, 14);
+            printf("CARGO.........: %s", t->conteudo.cargo);
+            gotoxy(15, 16);
+            printf("DATA_ADMISSAO.: %s", t->conteudo.dt_admissao);
+            gotoxy(15, 18);
+            printf("TELEFONE......: %s", t->conteudo.telefone);
+            gotoxy(15, 20);
+            printf("SALARIO.......: %.2f", t->conteudo.salario);
+
+            gotoxy(7, 25);
+            printf("CONFIRMAR EXCLUSAO? [1-SIM / 2-NAO]: ");
+            scanf("%d", &opc);
+
+            if (opc == 1)
+            {
+                free(t);
+            }
+            gotoxy(7, 25);
+            printf("                                                         ");
+            gotoxy(30, 23);
+            printf("CADASTRO EXCLUIDO");
+            getch();
+            return;
+        }
+        cont = 1;
+        r = L->primeiro;
+        t = r->proximo;
+
+        while (cont < posi - 1)
+        {
+            r = r->proximo;
+            t = t->proximo;
+            cont++;
+        }
+
+        tela();
+        gotoxy(35, 6);
+        printf("EXCLUSAO CADASTRO NA POSICAO %d", posi);
+        gotoxy(15, 8);
+        printf("CODIGO........: %d", t->conteudo.codigo);
+        gotoxy(15, 10);
+        printf("NOME..........: %s", t->conteudo.nome);
+        gotoxy(15, 12);
+        printf("ENDERECO......: %s", t->conteudo.endereco);
+        gotoxy(15, 14);
+        printf("CARGO.........: %s", t->conteudo.cargo);
+        gotoxy(15, 16);
+        printf("DATA_ADMISSAO.: %s", t->conteudo.dt_admissao);
+        gotoxy(15, 18);
+        printf("TELEFONE......: %s", t->conteudo.telefone);
+        gotoxy(15, 20);
+        printf("SALARIO.......: %.2f", t->conteudo.salario);
+
+        gotoxy(7, 25);
+        printf("CONFIRMAR EXCLUSAO? [1-SIM / 2-NAO]: ");
+        scanf("%d", &opc);
+
+        if (opc == 1)
+        {
+            if (t == L->ultimo)
+            {
+                L->ultimo = r;
+            }
+            r->proximo = t->proximo;
+            free(t); 
         }
         gotoxy(7, 25);
         printf("                                                         ");
@@ -658,6 +788,9 @@ int main()
             break;
         case 5:
             exclusao_final(&L);
+            break;
+        case 6:
+            excluir_posicao(&L);
             break;
         case 8:
             consultar(&L);
