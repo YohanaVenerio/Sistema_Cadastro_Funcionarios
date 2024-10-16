@@ -98,6 +98,7 @@ typedef struct{
     
 } TipoLista;
 
+//Pesquisa códigos para validação
 TipoApontador pesquisa(TipoLista *L, int cod)
 {
     TipoApontador aux;
@@ -111,6 +112,20 @@ TipoApontador pesquisa(TipoLista *L, int cod)
         aux = aux -> proximo;
     }
     return NULL;
+}
+
+//Contagem de cadastros
+int contagem(TipoLista*L)
+{
+    int cont;
+    TipoApontador aux;
+    aux = L->primeiro;
+    while(aux!=NULL)
+    {
+        cont ++;
+        aux = aux->proximo;
+    }
+    return cont;
 }
 
 //Tela de cadastro
@@ -333,19 +348,7 @@ void cadastro_inicio(TipoLista*L)
     }while(resp==1);
 }
 
-int contagem(TipoLista*L)
-{
-    int cont;
-    TipoApontador aux;
-    aux = L->primeiro;
-    while(aux!=NULL)
-    {
-        cont ++;
-        aux = aux->proximo;
-    }
-    return cont;
-}
-
+//Função Cadastrar em uma posição X
 int cadastro_posicao(TipoLista*L)
 {
     reg_funcionario reg_funci;
@@ -456,6 +459,63 @@ int cadastro_posicao(TipoLista*L)
     } while (resp==1);
 }
 
+//Função Deletar no inicio da lista
+void exclusao_inicio(TipoLista*L)
+{
+    TipoApontador t;
+    int opc;
+    t = L->primeiro;
+    do
+    {
+        tela();
+        gotoxy(35,6);
+        printf("EXCLUSAO PRIMEIRO CADASTRO");
+        gotoxy(15,8);
+        printf("CODIGO........: %d", t->conteudo.codigo);
+        gotoxy(15,10);
+        printf("NOME..........: %s", t->conteudo.nome);
+        gotoxy(15,12);
+        printf("ENDERECO......: %s", t->conteudo.endereco);
+        gotoxy(15,14);
+        printf("CARGO.........: %s", t->conteudo.cargo);
+        gotoxy(15,16);
+        printf("DATA_ADMISSAO.: %s", t->conteudo.dt_admissao);
+        gotoxy(15,18);
+        printf("TELEFONE......: %s", t->conteudo.telefone);
+        gotoxy(15,20);
+        printf("SALARIO.......: %.2f", t->conteudo.salario);
+
+        gotoxy(51,25);
+        printf("         ");
+        gotoxy(7, 25);
+        printf("CONFIRMAR EXCLUSAO?: [1-SIM / 2-NAO]: ");
+        scanf(" %d", &opc);
+
+        if(opc == 1)
+        {
+            if (L->primeiro->proximo == NULL)   
+            {
+                free(L->primeiro);
+                L->primeiro = NULL;
+                L->ultimo = NULL;
+            } else {
+                t = L->primeiro;
+                L->primeiro = t->proximo;
+                free(t);
+            }
+        }
+        gotoxy(7, 25);
+        printf("EXCLUIR PROXIMO CADASTRO? [1-SIM / 2-NAO]: ");
+        scanf(" %d", &opc);
+        if (opc == 1)
+        {
+            t = t->proximo;
+        }
+
+    } while (opc==1);
+    
+}
+
 int main()
 {
     tela();
@@ -485,6 +545,9 @@ int main()
             break;
         case 3:
             cadastro_posicao(&L);
+            break;
+        case 4:
+            exclusao_inicio(&L);
             break;
         case 8:
             consultar(&L);
