@@ -431,9 +431,9 @@ void exclusao_inicio(TipoLista *L)
     t = L->primeiro;
     do
     {
-        if (L->primeiro == NULL) 
+        if (L->primeiro == NULL)
         {
-            gotoxy(7,25);
+            gotoxy(7, 25);
             printf("LISTA VAZIA, NADA A EXCLUIR.");
             getch();
             return;
@@ -502,9 +502,9 @@ void exclusao_final(TipoLista *L)
     int opc;
     do
     {
-        if (L->primeiro == NULL) 
+        if (L->primeiro == NULL)
         {
-            gotoxy(7,25);
+            gotoxy(7, 25);
             printf("LISTA VAZIA, NADA A EXCLUIR.");
             getch();
             return;
@@ -544,7 +544,7 @@ void exclusao_final(TipoLista *L)
         {
             if (L->primeiro->proximo == NULL)
             {
-                s = L->primeiro; 
+                s = L->primeiro;
                 free(s);
                 L->primeiro = NULL;
                 L->ultimo = NULL;
@@ -565,8 +565,8 @@ void exclusao_final(TipoLista *L)
     } while (opc == 1);
 }
 
-//Função Excluir em uma posição X
-void excluir_posicao(TipoLista*L)
+// Função Excluir em uma posição X
+void excluir_posicao(TipoLista *L)
 {
     TipoApontador t;
     TipoApontador r;
@@ -577,9 +577,9 @@ void excluir_posicao(TipoLista*L)
     cntg = contagem(L);
     do
     {
-        if (L->primeiro == NULL) 
+        if (L->primeiro == NULL)
         {
-            gotoxy(7,25);
+            gotoxy(7, 25);
             printf("LISTA VAZIA, NADA A EXCLUIR.");
             getch();
             return;
@@ -642,6 +642,7 @@ void excluir_posicao(TipoLista*L)
             getch();
             return;
         }
+
         cont = 1;
         r = L->primeiro;
         t = r->proximo;
@@ -682,7 +683,7 @@ void excluir_posicao(TipoLista*L)
                 L->ultimo = r;
             }
             r->proximo = t->proximo;
-            free(t); 
+            free(t);
         }
         gotoxy(7, 25);
         printf("                                                         ");
@@ -713,9 +714,9 @@ void consultar(TipoLista *L)
     else
     {
         p = L->primeiro;
-        tela();
         do
         {
+            tela();
             gotoxy(15, 8);
             printf("CODIGO........: %d", p->conteudo.codigo);
             gotoxy(15, 10);
@@ -754,6 +755,121 @@ void consultar(TipoLista *L)
     }
 }
 
+//Função alterar cadastro
+void alteracao_funcionario(TipoLista *L)
+{
+    int resp;
+    int campo;
+    reg_funcionario reg_funci;
+    TipoApontador aux2;
+
+    do
+    {
+        do
+        {
+            tela();
+            tela_cadastro();
+            gotoxy(7, 25);
+            printf("DIGITE O CODIGO QUE DESEJA ALTERAR (0 para sair): ");
+            scanf("%d", &reg_funci.codigo);
+
+            aux2 = pesquisa(L, reg_funci.codigo);
+
+            if (aux2 == NULL && reg_funci.codigo != 0)
+            {
+                gotoxy(7, 25);
+                printf("CODIGO NAO EXISTE");
+                getch();
+            }
+        } while (aux2 == NULL && reg_funci.codigo != 0);
+
+        if (reg_funci.codigo == 0)
+        {
+            return;
+        }
+
+        tela();
+        gotoxy(35, 6);
+        printf("ALTERACAO DE DADOS");
+        gotoxy(15, 8);
+        printf("1 - NOME..........: %s", aux2->conteudo.nome);
+        gotoxy(15, 10);
+        printf("2 - ENDERECO......: %s", aux2->conteudo.endereco);
+        gotoxy(15, 12);
+        printf("3 - CARGO.........: %s", aux2->conteudo.cargo);
+        gotoxy(15, 14);
+        printf("4 - DATA ADMISSAO.: %s", aux2->conteudo.dt_admissao);
+        gotoxy(15, 16);
+        printf("5 - TELEFONE......: %s", aux2->conteudo.telefone);
+        gotoxy(15, 18);
+        printf("6 - SALARIO.......: %.2f", aux2->conteudo.salario);
+
+        do
+        {
+            gotoxy(25, 20);
+            printf("DIGITE O NUMERO DO CAMPO QUE DESEJA ALTERAR (1-6): ");
+            scanf("%d", &campo);
+            if (campo < 1 || campo > 6)
+            {
+                gotoxy(25, 22);
+                printf("CAMPO INVALIDO.");
+            }
+        } while (campo < 1 || campo > 6);
+
+        switch (campo)
+        {
+        case 1:
+            gotoxy(31, 8);
+            printf("                                            ");
+            fflush(stdin);
+            fgets(aux2->conteudo.nome, 50, stdin);
+            break;
+        case 2:
+            gotoxy(31, 10);
+            printf("                                            ");
+            fflush(stdin);
+            fgets(aux2->conteudo.endereco, 50, stdin);
+            break;
+        case 3:
+            gotoxy(31, 12);
+            printf("                                            ");
+            fflush(stdin);
+            fgets(aux2->conteudo.cargo, 50, stdin);
+            break;
+        case 4:
+            gotoxy(31, 14);
+            printf("                                            ");
+            fflush(stdin);
+            fgets(aux2->conteudo.dt_admissao, 11, stdin);
+            break;
+        case 5:
+            gotoxy(31, 16);
+            printf("                                            ");
+            fflush(stdin);
+            fgets(aux2->conteudo.telefone, 15, stdin);
+            break;
+        case 6:
+            gotoxy(31, 18);
+            printf("                                            ");
+            printf("NOVO SALARIO: ");
+            scanf("%f", &aux2->conteudo.salario);
+            break;
+        }
+
+        gotoxy(7, 25);
+        printf("CONFIRMA AS ALTERACOES? [1-SIM / 2-NAO] : ");
+        scanf("%d", &resp);
+
+        if (resp == 1)
+        {
+            gotoxy(30, 23);
+            printf("ALTERACOES SALVAS COM SUCESSO");
+            getch();
+        }
+
+    } while (resp != 2);
+}
+
 int main()
 {
     tela();
@@ -765,12 +881,21 @@ int main()
 
     do
     {
+        do
+        {
+            tela();
+            tela_principal();
+            gotoxy(7, 25);
+            printf("DIGITE SUA OPCAO : ");
+            scanf("%d", &opc);
 
-        tela();
-        tela_principal();
-        gotoxy(7, 25);
-        printf("DIGITE SUA OPCAO : ");
-        scanf("%d", &opc);
+            if (opc < 1 || opc > 9)
+            {
+                gotoxy(7, 25);
+                printf("OPCAO INVALIDA        ");
+                getch();
+            }
+        } while (opc < 1 || opc > 9);
 
         switch (opc)
         {
@@ -792,11 +917,14 @@ int main()
         case 6:
             excluir_posicao(&L);
             break;
+        case 7:
+            alteracao_funcionario(&L);
+            break;
         case 8:
             consultar(&L);
             break;
         }
-    } while (opc != 9);
-
+        
+    }while (opc != 9);
     return 0;
 }
